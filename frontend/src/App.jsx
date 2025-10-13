@@ -11,7 +11,7 @@ export default function App() {
     fetch("http://localhost:8000/simulations", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({  })
+      body: JSON.stringify({simSpeed: simSpeed})
     }).then(resp => resp.json())
     .then(data => {
       console.log(data);
@@ -34,7 +34,7 @@ export default function App() {
     clearInterval(running.current);
   }
 
-  const handleSimSpeedSliderChange = (event, newValue) => {
+  const handleSimSpeedSliderChange = (newValue) => {
     setSimSpeed(newValue);
   };
 
@@ -51,14 +51,15 @@ export default function App() {
         <button onClick={handleStop}>
           Stop
         </button>
+        {/* <SliderField label="Car Speed" min={1} max={10} type='number' value={simSpeed} onChange={handleSimSpeedSliderChange}/> */}
       </div>
-      <svg width="800" height="500" xmlns="http://www.w3.org/2000/svg" style={{backgroundColor:"white"}}>
+      <svg width="1500" height="500" xmlns="http://www.w3.org/2000/svg" style={{backgroundColor:"white"}}>
 
-      <rect x={0} y={200} width={800} height={80} style={{fill: "darkgray"}}></rect>
+      <rect x={0} y={200} width={1500} height={80} style={{fill: "darkgray"}}></rect>
       {/* <image x={0} y={240} href="./racing-car.png"/> */}
       {
         cars.map(car =>
-          <image id={car.id} x={car.pos[0]*32} y={240} width={32} href="./racing-car.png"/>
+          <image id={car.id} x={car.pos[0]*32} y={200} width={32} href="./racing-car.png"/>
         )
       }
       </svg>

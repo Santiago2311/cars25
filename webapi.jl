@@ -4,8 +4,9 @@ using UUIDs
 
 instances = Dict()
 
-route("/simulations", method = POST) do
+route("/simulations", method=POST) do
     payload = jsonpayload()
+    speed = payload["simSpeed"]
 
     model = initialize_model()
     id = string(uuid1())
@@ -15,7 +16,7 @@ route("/simulations", method = POST) do
     for car in allagents(model)
         push!(cars, car)
     end
-    
+
     json(Dict("Location" => "/simulations/$id", "cars" => cars))
 end
 
@@ -27,7 +28,7 @@ route("/simulations/:id") do
     for car in allagents(model)
         push!(cars, car)
     end
-    
+
     json(Dict("cars" => cars))
 end
 
@@ -35,7 +36,7 @@ end
 Genie.config.run_as_server = true
 Genie.config.cors_headers["Access-Control-Allow-Origin"] = "*"
 Genie.config.cors_headers["Access-Control-Allow-Headers"] = "Content-Type"
-Genie.config.cors_headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS" 
+Genie.config.cors_headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS"
 Genie.config.cors_allowed_origins = ["*"]
 
 up()
