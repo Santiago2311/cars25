@@ -6,8 +6,6 @@ instances = Dict()
 
 route("/simulations", method=POST) do
     payload = jsonpayload()
-    speed = payload["simSpeed"]
-
     model = initialize_model()
     id = string(uuid1())
     instances[id] = model
@@ -21,8 +19,9 @@ route("/simulations", method=POST) do
 end
 
 route("/simulations/:id") do
-    println(payload(:id))
-    model = instances[payload(:id)]
+    id = params(:id)
+    println(id)
+    model = instances[id]
     run!(model, 1)
     cars = []
     for car in allagents(model)

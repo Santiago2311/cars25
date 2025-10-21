@@ -2,14 +2,25 @@ using Agents, Random
 using StaticArrays: SVector
 
 @agent struct Car(ContinuousAgent{2,Float64})
-    speed::Int64 = 1
+    accelerating::Bool = true
 end
 
+accelerate(agent) = agent.vel[1] + 0.05
+decelerate(agent) = agent.vel[1] - 0.1
+
 function agent_step!(agent, model)
-    move_agent!(agent, model, 1.0)
-    if agent.id == 1
-        println(agent.pos)
+    new_velocity = agent.accelerating ? accelerate(agent) : decelerate(agent)
+
+    if new_velocity >= 1.0
+        new_velocity = 1.0
+        agent.accelerating = false
+    elseif new_velocity <= 0.0
+        new_velocity = 0.0
+        agent.accelerating = true
     end
+
+    agent.vel = (new_velocity, 0.0)
+    move_agent!(agent, model, 0.4)
 end
 
 function initialize_model(extent=(50, 10))
@@ -18,9 +29,15 @@ function initialize_model(extent=(50, 10))
 
     model = StandardABM(Car, space2d; rng, agent_step!, scheduler=Schedulers.Randomly())
 
-    for px in randperm(50)[1:10]
-        rand()
-        add_agent!(SVector{2,Float64}(px, 0.0), model; vel=SVector{2,Float64}(rand(0:1.0), 0.0))
+    first = true
+    py = 1.0
+    for px in randperm(50)[1:5]
+        if first
+            add_agent!(SVector{2,Float64}(px, py), model; vel=SVector{2,Float64}(1.0, 0.0))
+        else
+            add_agent!(SVector{2,Float64}(px, py), model; vel=SVector{2,Float64}(rand(Uniform(0.2, 0.7)), 0.0))
+        end
+        py += 2.0
     end
     model
 end
