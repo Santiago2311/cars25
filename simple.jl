@@ -8,6 +8,15 @@ end
 accelerate(agent) = agent.vel[1] + 0.05
 decelerate(agent) = agent.vel[1] - 0.1
 
+function car_ahead(agent, model)
+    for neighbor in nearby_agents(agent, model, 1.0)
+        if neighbor.pos[1] > agent.pos[1]
+            return neighbor
+        end
+    end
+    nothing
+end
+
 function agent_step!(agent, model)
     new_velocity = agent.accelerating ? accelerate(agent) : decelerate(agent)
 
